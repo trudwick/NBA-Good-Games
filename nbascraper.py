@@ -8,7 +8,6 @@ from datetime import timedelta
 
 def goodGameFinder(gameDate):
     gamefinder = leaguegamefinder.LeagueGameFinder()
-    # gamefinder = leaguegamefinder.LeagueGameFinder(date_from_nullable='2023-01-14')
     # The first DataFrame of those returned is what we want.
     games = gamefinder.get_data_frames()[0]
 
@@ -45,15 +44,17 @@ def gameIsGood(game_id):
     pbp_q4 = pbp.loc[ (pbp['PERIOD']==4) &(pbp['PCTIMESTRING'].astype(str).str[0]<'4')&(pbp['PCTIMESTRING'].astype(str).str[1]==':')]     # 
     
     for play in pbp_q4['SCOREMARGIN']:
-        if play is not None and abs(int(play))<5:
-            return True
+
+        if play is not None:
+            if play == "TIE" or abs(int(play))<5:
+                return True
     return False
 
 def main():
     # game_date = '2024-01-15'
     game_date = input("Input date in the format YYYY-MM-DD. (leave blank for yesterday):")
     if game_date=='':
-        game_date=str(date.today()-timedelta(days = 1))
+        game_date=str(date.today()-timedelta(days = 1)) #use yesterday
     print('Games for date:',game_date)
     goodGameFinder(game_date)
 
